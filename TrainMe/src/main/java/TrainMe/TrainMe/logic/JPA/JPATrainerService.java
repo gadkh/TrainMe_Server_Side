@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.DatabaseReference.CompletionListener;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference.CompletionListener;
 import TrainMe.TrainMe.logic.TrainerService;
 
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import TraineMe.TrainMe.logic.entity.TrainerEntity;
 
@@ -28,6 +30,7 @@ public class JPATrainerService implements TrainerService {
 	private FirebaseOptions options;
 	private FirebaseDatabase database;
 	private DatabaseReference ref;
+	//private final String fileName="./JasonFiles/train-e0fc2-firebase-adminsdk-zm1mf-f441dd4bd4.json";
 	private final String fileName="D://Final Project Server/train-e0fc2-firebase-adminsdk-zm1mf-f441dd4bd4.json";
 
 	@PostConstruct
@@ -54,7 +57,7 @@ public class JPATrainerService implements TrainerService {
 	@Override
 	public TrainerEntity storeTrainer(TrainerEntity newTrainer) {
 		DatabaseReference databaseReference = database.getReference("/");
-		 DatabaseReference childReference = databaseReference.child("trainner");
+		 DatabaseReference childReference = databaseReference.child("trainer").child(newTrainer.getId());
 		 CountDownLatch countDownLatch = new CountDownLatch(1);
 		 childReference.setValue(newTrainer, new CompletionListener() {
 			
@@ -76,4 +79,19 @@ public class JPATrainerService implements TrainerService {
        }
 	}
 
+	@Override
+	public void deleteByTrainer(TrainerEntity trainetToDelete) {
+		DatabaseReference databaseReference = database.getReference("/");
+		 DatabaseReference childReference = databaseReference.child("trainer").child(trainetToDelete.getId());
+		 childReference.removeValueAsync();
+	}
+
+	@Override
+	public void deleteByTrainerId(String trainertId) {
+		DatabaseReference databaseReference = database.getReference("/");
+		 DatabaseReference childReference = databaseReference.child("trainer").child(trainertId);
+		 childReference.removeValueAsync();
+	}
 }
+
+
