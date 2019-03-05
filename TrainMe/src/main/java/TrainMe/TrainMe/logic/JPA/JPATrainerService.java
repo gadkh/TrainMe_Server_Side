@@ -30,6 +30,8 @@ public class JPATrainerService implements TrainerService {
 	private FirebaseOptions options;
 	private FirebaseDatabase database;
 	private DatabaseReference ref;
+	private DatabaseReference databaseReference;
+	private  DatabaseReference childReference;
 	//private final String fileName="./JasonFiles/train-e0fc2-firebase-adminsdk-zm1mf-f441dd4bd4.json";
 	private final String fileName="D://Final Project Server/train-e0fc2-firebase-adminsdk-zm1mf-f441dd4bd4.json";
 
@@ -51,13 +53,13 @@ public class JPATrainerService implements TrainerService {
 		FirebaseApp.initializeApp(options);
 		this.database = FirebaseDatabase.getInstance();
 		this.ref = database.getReference("server/saving-data/fireblog");
-
+		this.databaseReference = database.getReference("/");
+		//this.childReference = databaseReference.child("Trainers");
 	}
 	
 	@Override
 	public TrainerEntity storeTrainer(TrainerEntity newTrainer) {
-		DatabaseReference databaseReference = database.getReference("/");
-		 DatabaseReference childReference = databaseReference.child("trainer").child(newTrainer.getId());
+		this.childReference = databaseReference.child("Trainers").child(newTrainer.getId());
 		 CountDownLatch countDownLatch = new CountDownLatch(1);
 		 childReference.setValue(newTrainer, new CompletionListener() {
 			
@@ -77,19 +79,20 @@ public class JPATrainerService implements TrainerService {
            ex.printStackTrace();
            return null;
        }
+		 
 	}
 
 	@Override
 	public void deleteByTrainer(TrainerEntity trainetToDelete) {
-		DatabaseReference databaseReference = database.getReference("/");
-		 DatabaseReference childReference = databaseReference.child("trainer").child(trainetToDelete.getId());
+		 this.childReference = databaseReference.child("Trainers").child(trainetToDelete.getId());
 		 childReference.removeValueAsync();
 	}
 
 	@Override
 	public void deleteByTrainerId(String trainertId) {
-		DatabaseReference databaseReference = database.getReference("/");
-		 DatabaseReference childReference = databaseReference.child("trainer").child(trainertId);
+		//DatabaseReference databaseReference = database.getReference("/");
+		//this. childReference.child(trainertId);
+		 this.childReference = databaseReference.child("Trainers").child(trainertId);
 		 childReference.removeValueAsync();
 	}
 }

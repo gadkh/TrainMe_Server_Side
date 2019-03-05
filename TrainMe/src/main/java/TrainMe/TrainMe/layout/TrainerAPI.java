@@ -22,13 +22,12 @@ public class TrainerAPI {
 		this.trainerService=trainerService;
 	}
 	
-	@RequestMapping(value = "/ex/foos", method = RequestMethod.GET)
-	public String getFoosBySimplePath() {
-	    return "Get some Foos";
+	@RequestMapping(method = RequestMethod.GET, path = "/stam", produces = MediaType.APPLICATION_JSON_VALUE)
+	public String stam()
+	{
+		return "Hi Golan";
 	}
-	
-	
-	@RequestMapping(method = RequestMethod.POST, path = "/trainme/trainners", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(method = RequestMethod.POST, path = "/trainme/trainers", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public TrainerTO addTrainer(@RequestBody TrainerTO trainerTO)
 	{
 		TrainerEntity trainerEntity=trainerTO.toEntity();
@@ -39,6 +38,7 @@ public class TrainerAPI {
 	@RequestMapping(method = RequestMethod.DELETE, path = "/trainme/removeTrainer", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void removeTrainer(@RequestBody TrainerTO trainerTO)
 	{
+		
 		TrainerEntity trainerToRemove=trainerTO.toEntity();
 		this.trainerService.deleteByTrainer(trainerToRemove);
 	}
@@ -46,6 +46,6 @@ public class TrainerAPI {
 	@RequestMapping(method = RequestMethod.DELETE, path = "/trainme/removeTrainer/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void removeTrainerById(@PathVariable("id") String id)
 	{
-		
+		this.trainerService.deleteByTrainerId(id);
 	}
 }
