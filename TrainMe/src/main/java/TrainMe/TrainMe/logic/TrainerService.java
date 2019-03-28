@@ -1,9 +1,9 @@
 package TrainMe.TrainMe.logic;
 
-import TraineMe.TrainMe.logic.entity.TrainerEntity;
+import TrainMe.TrainMe.logic.entity.TrainerEntity;
 
 public interface TrainerService {
-	public TrainerEntity storeTrainer(TrainerEntity newTrainer);
+	public TrainerEntity saveTrainer(TrainerEntity newTrainer);
 	public void deleteByTrainer(TrainerEntity trainetToDelete);
 	public void deleteByTrainerId(String trainertId);
 }

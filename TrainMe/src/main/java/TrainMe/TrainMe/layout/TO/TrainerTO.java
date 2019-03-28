@@ -1,6 +1,6 @@
 package TrainMe.TrainMe.layout.TO;
 
-import TraineMe.TrainMe.logic.entity.TrainerEntity;
+import TrainMe.TrainMe.logic.entity.TrainerEntity;
 
 public class TrainerTO {
 	private String name;

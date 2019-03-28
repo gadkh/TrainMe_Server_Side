@@ -1,4 +1,4 @@
-package TraineMe.TrainMe.logic.entity;
+package TrainMe.TrainMe.logic.entity;
 
 public class TrainerEntity {
 	private String name;
