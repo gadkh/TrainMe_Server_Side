@@ -225,4 +225,193 @@ public class FireBaseMethods implements IFireBase {
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean isOnWaitingList(String courseId,String userId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+
+		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				countDownLatch.countDown();
+				 if(snapshot.child("Courses").child(courseId).child("waitingList").child(userId).exists()){
+					 
+				 }
+			}
+			
+			@Override
+			public void onCancelled(DatabaseError error) {
+				// TODO Auto-generated method stub
+			}
+		});
+		try {
+		
+			countDownLatch.await();
+			return true;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public boolean isUserRegistered(String courseId, String userId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+
+		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				countDownLatch.countDown();
+				 if(snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()){
+					 // TODO deal with the return here
+				 }
+			}
+			
+			@Override
+			public void onCancelled(DatabaseError error) {
+				// TODO Auto-generated method stub
+			}
+		});
+		try {
+		
+			countDownLatch.await();
+			return true;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	@Override
+	public int positionOnWaitingList(String courseId, String userId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+
+		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				countDownLatch.countDown();
+				int position = Integer.parseInt(snapshot.child("Courses").child(courseId).child("waitingList").child(userId)
+                 .child("position").getValue().toString());
+					 // TODO deal with the return here
+			}
+			@Override
+			public void onCancelled(DatabaseError error) {
+				// TODO Auto-generated method stub
+			}
+		});
+		try {
+		
+			countDownLatch.await();
+			return 1;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return 0;
+		}
+	}
+
+	@Override
+	public UsersEntity addUserToCourse(String courseId, UsersEntity userEntity) {
+		this.childReference = databaseReference.child("Courses").child(courseId);
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		childReference.child("registered").child(userEntity.getUserId())
+		.setValue(userEntity, new CompletionListener() {
+
+			@Override
+			public void onComplete(DatabaseError error, DatabaseReference ref) {
+				System.out.println("Record saved!");
+				countDownLatch.countDown();
+			}
+		});
+
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+			return userEntity;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}	
+	
+	@Override
+	public void setCurrentNumOfUsersRegisteredToCourse(String courseId,int newCurrentNumOfUsers) {
+		currentNumOfUsers = getCurrentNumOfUsersRegisteredToCourse(courseId);
+		currentNumOfUsers = newCurrentNumOfUsers;
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		this.childReference = databaseReference.child("Courses").child(courseId);
+		childReference.child("currentNumOfUsersInCourse").setValue(String.valueOf(currentNumOfUsers), new CompletionListener() {
+			@Override
+			public void onComplete(DatabaseError error, DatabaseReference ref) {
+				System.out.println("currentNumOfUsers Updated!");
+				countDownLatch.countDown();
+			}
+		});
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public int getCurrentNumOfUsersRegisteredToCourse(String courseId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				currentNumOfUsers=Integer.parseInt(snapshot.child("Courses").child(courseId).child("currentNumOfUsersInCourse").getValue().toString());
+				countDownLatch.countDown();
+			}
+			@Override
+			public void onCancelled(DatabaseError error) {
+				// TODO Auto-generated method stub
+			}
+		});
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+			return currentNumOfUsers;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return -1;
+		}
+	}
+
+	@Override
+	public void deleteUserFromCourse(String courseId, String userId) {
+		this.childReference = databaseReference.child("Courses").child(courseId).child("registered").child(userId);
+		childReference.removeValueAsync();
+	}
+
+	@Override
+	public UsersEntity joinToWaitingList(String courseId, UsersEntity userEntity) {
+		this.childReference = databaseReference.child("Courses").child(courseId)
+				.child("waitingList").child(userEntity.getUserId());
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		childReference.setValue(userEntity, new CompletionListener() {
+
+			@Override
+			public void onComplete(DatabaseError error, DatabaseReference ref) {
+				System.out.println("User is added to waiting list!");
+				countDownLatch.countDown();
+			}
+		});
+
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+			return userEntity;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+
+	@Override
+	public void deleteUserFromWaitingList(String courseId, String userId) {
+		this.childReference = databaseReference.child("Courses").child(courseId)
+				.child("waitingList").child(userId);
+		childReference.removeValueAsync();		
+	}
 }

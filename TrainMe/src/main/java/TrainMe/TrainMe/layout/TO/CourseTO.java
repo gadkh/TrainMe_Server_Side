@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 import TrainMe.TrainMe.logic.entity.CourseEntity;
 
-public class CourseTo {
+public class CourseTO {
 	private String courseName;
     private TrainerTO trainer;
     private String time;
@@ -13,13 +13,14 @@ public class CourseTo {
     private String courseLocation;
     private String maxNumOfUsersInCourse;
     private String date;
+    private String courseId;
     
-	public CourseTo() {
+	public CourseTO() {
 		super();
 		this.currentNumOfUsersInCourse="0";
 	}
 
-	public CourseTo(CourseEntity courseEntity)
+	public CourseTO(CourseEntity courseEntity)
 	{
 		this.courseName=courseEntity.getCourseName();
 		this.trainer=new TrainerTO();
@@ -30,10 +31,11 @@ public class CourseTo {
 		this.courseLocation=courseEntity.getCourseLocation();
 		this.maxNumOfUsersInCourse=courseEntity.getMaxNumOfUsersInCourse();
 		this.date=courseEntity.getDate();
+		this.courseId=courseEntity.getCourseId();
 	}
 
-	public CourseTo(String courseName, TrainerTO trainer, String time, String currentNumOfUsersInCourse,
-			String courseLocation, String maxNumOfUsersInCourse, String date) {
+	public CourseTO(String courseName, TrainerTO trainer, String time, String currentNumOfUsersInCourse,
+			String courseLocation, String maxNumOfUsersInCourse, String date,String courseId) {
 		super();
 		this.courseName = courseName;
 		this.trainer = trainer;
@@ -42,6 +44,7 @@ public class CourseTo {
 		this.courseLocation = courseLocation;
 		this.maxNumOfUsersInCourse = maxNumOfUsersInCourse;
 		this.date = date;
+		this.courseId=courseId;
 	}
 
 	public String getCourseName() {
@@ -100,6 +103,14 @@ public class CourseTo {
 	public void setDate(String date) {
 		this.date = date;
 	}
+	
+	public String getCourseId() {
+		return courseId;
+	}
+
+	public void setCourseId(String courseId) {
+		this.courseId = courseId;
+	}
 
 	public CourseEntity toEntity()
 	{
@@ -116,7 +127,7 @@ public class CourseTo {
 		//Create Course ID
 		Calendar calendar=Calendar.getInstance();
 		SimpleDateFormat currentTimeToString = new SimpleDateFormat("HH:mm:ss:SSS");
-        String courseId = currentTimeToString.format(calendar.getTime()).toString();
+        this.courseId = currentTimeToString.format(calendar.getTime()).toString();
 		courseEntity.setCourseId(courseId);
 		return courseEntity;
 	}

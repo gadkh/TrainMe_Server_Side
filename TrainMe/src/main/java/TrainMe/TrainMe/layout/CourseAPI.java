@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import TrainMe.TrainMe.layout.TO.CourseTo;
+import TrainMe.TrainMe.Plugins.CheckCourseIsFull;
+import TrainMe.TrainMe.layout.TO.CourseTO;
 import TrainMe.TrainMe.logic.CourseService;
 import TrainMe.TrainMe.logic.entity.CourseEntity;
 
@@ -25,17 +26,24 @@ public class CourseAPI {
 	
 	@RequestMapping(method = RequestMethod.POST, path = "/trainme/course", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@CrossOrigin(origins="*")
-	public CourseTo addCourse(@RequestBody CourseTo courseTo)
+	public CourseTO addCourse(@RequestBody CourseTO courseTo)
 	{
 		CourseEntity courseEntity=courseTo.toEntity();
 		this.courseService.saveCourse(courseEntity);
-		return new CourseTo(courseEntity);
+		return new CourseTO(courseEntity);
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, path = "/trainme/checkCourseFull/{courseId}")
 	@CrossOrigin(origins="*")
-	public boolean checkCourseIsFull(@PathVariable("courseId") String courseId)
+	public Object checkCourseIsFull(@PathVariable("courseId") String courseId)
 	{
-		return this.courseService.checkCourseIsFull(courseId);
+		if(this.courseService.checkCourseIsFull(courseId)==true)
+		{
+			return new CheckCourseIsFull(true);
+		}
+		else
+		{
+			return new CheckCourseIsFull(true);
+		}
 	}
 }

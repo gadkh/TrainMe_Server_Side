@@ -18,8 +18,17 @@ public interface IFireBase {
 	/**User Methods**/
 	public UsersEntity addUser(UsersEntity userEntity);
 	public void deleteByUserId(String userId);
+	public boolean isUserRegistered(String courseId,String userId);
+	public UsersEntity addUserToCourse(String courseId,UsersEntity userEntity);
+	public UsersEntity joinToWaitingList(String courseId,UsersEntity userEntity);
+	public void deleteUserFromCourse(String courseId, String userId);
+	public void deleteUserFromWaitingList(String courseId, String userId);
 	
 	/**Course Methods**/
 	public CourseEntity addCourse(CourseEntity courseEntity);
 	public boolean checkCourseIsFull(String courseId);
+	public boolean isOnWaitingList(String courseId,String userId);
+	public int positionOnWaitingList(String courseId,String userId);
+	public void setCurrentNumOfUsersRegisteredToCourse(String courseId,int newCurrentNumOfUsers);
+	public int getCurrentNumOfUsersRegisteredToCourse(String courseId);
 }
