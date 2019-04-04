@@ -46,7 +46,7 @@ public class JPAActivityService implements ActivityService {
 				throw new RuntimeException(e);
 			}
 		}
-		return rvMap;
+		return activityEntity;
 	}
 	
 }
