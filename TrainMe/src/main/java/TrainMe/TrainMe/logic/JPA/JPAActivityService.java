@@ -35,10 +35,8 @@ public class JPAActivityService implements ActivityService {
 				// autowire plugin
 				TrainMePlugins plugin = (TrainMePlugins) this.spring.getBean(pluginClass);
 				Object rv = plugin.invokeAction(activityEntity);
-				System.err.println("Return Value: "+rv.getClass());
 				rvMap = this.jackson.readValue(this.jackson.writeValueAsString(rv), Map.class);
-				//System.err.println("The Map Value Key :" +rvMap.keySet());
-				//activityEntity.getMoreAttributes().putAll(rvMap);
+				
 				activityEntity.getMoreAttributes().clear();
 				activityEntity.getMoreAttributes().putAll(rvMap);
 
