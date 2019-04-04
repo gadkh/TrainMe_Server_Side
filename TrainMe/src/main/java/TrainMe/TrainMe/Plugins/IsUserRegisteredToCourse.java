@@ -1,10 +1,10 @@
 package TrainMe.TrainMe.Plugins;
 
-public class UserRegistered {
+public class IsUserRegisteredToCourse {
 	private String userId;
 	private String courseId;
 	private boolean registered;
-	public UserRegistered() {
+	public IsUserRegisteredToCourse() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
