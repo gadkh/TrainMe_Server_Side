@@ -11,12 +11,12 @@ import TrainMe.TrainMe.FireBase.logic.IFireBase;
 import TrainMe.TrainMe.logic.entity.ActivityEntity;
 
 @Component
-public class UserRegisteredPlugin implements TrainMePlugins{
+public class IsUserRegisteredToCoursePlugin implements TrainMePlugins{
 	private ObjectMapper jackson;
 	private IFireBase firebaseService;
 	
 	@Autowired
-	public UserRegisteredPlugin(IFireBase firebaseService) {
+	public IsUserRegisteredToCoursePlugin(IFireBase firebaseService) {
 		this.firebaseService=firebaseService;
 		this.jackson = new ObjectMapper();
 	}
@@ -24,7 +24,7 @@ public class UserRegisteredPlugin implements TrainMePlugins{
 	@Override
 	public Object invokeAction(ActivityEntity activityEntity) {
 		try {
-			UserRegistered userRegistered=this.jackson.readValue(activityEntity.getAttributesJson(), UserRegistered.class);
+			IsUserRegisteredToCourse userRegistered=this.jackson.readValue(activityEntity.getAttributesJson(), IsUserRegisteredToCourse.class);
 			userRegistered.setRegistered(firebaseService.isUserRegistered(userRegistered.getCourseId(), userRegistered.getUserId()));
 			return userRegistered;
 		} catch (IOException e) {

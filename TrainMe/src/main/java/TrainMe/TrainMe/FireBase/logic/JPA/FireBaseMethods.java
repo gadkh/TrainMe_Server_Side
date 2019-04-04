@@ -270,10 +270,8 @@ public class FireBaseMethods implements IFireBase {
 			public void onDataChange(DataSnapshot snapshot) {
 				generalFlag=false;
 				 if(snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()){
-					 generalFlag=true;
-					 
-					 // TODO deal with the return here
-				 }
+					 generalFlag=true;				
+					 }
 				 else
 				 {
 					 generalFlag=false;
