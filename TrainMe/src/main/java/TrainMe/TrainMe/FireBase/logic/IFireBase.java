@@ -31,4 +31,6 @@ public interface IFireBase {
 	public int positionOnWaitingList(String courseId,String userId);
 	public void setCurrentNumOfUsersRegisteredToCourse(String courseId,int newCurrentNumOfUsers);
 	public int getCurrentNumOfUsersRegisteredToCourse(String courseId);
+	public void rateCourse(String courseId,String userId, int rate);
+	public boolean isDatePassed(String courseId);
 }

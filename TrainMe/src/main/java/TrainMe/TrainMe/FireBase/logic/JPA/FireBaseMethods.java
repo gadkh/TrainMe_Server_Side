@@ -3,6 +3,12 @@ package TrainMe.TrainMe.FireBase.logic.JPA;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +44,7 @@ public class FireBaseMethods implements IFireBase {
 	private FirebaseAuth firebaseAuth;
 	private int currentNumOfUsers;
 	private int maxNumOfUsers;
+	private boolean generalFlag;
 
 	@PostConstruct
 	public void configure() {
@@ -57,6 +64,7 @@ public class FireBaseMethods implements IFireBase {
 		this.firebaseAuth.getInstance();
 		this.ref = database.getReference("server/saving-data/fireblog");
 		this.databaseReference = database.getReference("/");
+		this.generalFlag=false;
 	}
 
 	@Override
@@ -257,14 +265,20 @@ public class FireBaseMethods implements IFireBase {
 	@Override
 	public boolean isUserRegistered(String courseId, String userId) {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
-
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				countDownLatch.countDown();
+				generalFlag=false;
 				 if(snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()){
+					 generalFlag=true;
+					 
 					 // TODO deal with the return here
 				 }
+				 else
+				 {
+					 generalFlag=false;
+				 }
+				 countDownLatch.countDown();
 			}
 			
 			@Override
@@ -273,10 +287,10 @@ public class FireBaseMethods implements IFireBase {
 			}
 		});
 		try {
-		
+			
 			countDownLatch.await();
-			return true;
-		} catch (InterruptedException ex) {
+			return generalFlag;
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
@@ -414,4 +428,65 @@ public class FireBaseMethods implements IFireBase {
 				.child("waitingList").child(userId);
 		childReference.removeValueAsync();		
 	}
+	
+	@Override
+	public void rateCourse(String courseId, String userId, int rate) {
+		this.childReference = databaseReference.child("Courses").child(courseId).child("rates").child(userId);
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		Map map = new HashMap<String, Integer>();
+		map.put(userId, rate);
+		childReference.setValue(map, new CompletionListener() {
+
+			@Override
+			public void onComplete(DatabaseError error, DatabaseReference ref) {
+				System.out.println("Rate saved!");
+				countDownLatch.countDown();
+			}
+		});
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+		}
+	}
+	
+	@Override
+	public boolean isDatePassed(String courseId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				Date current_Date, course_Date;
+				Calendar calendar = Calendar.getInstance();
+				SimpleDateFormat mdFormat = new SimpleDateFormat("dd-MM-yyyy");
+				String courseDateString = snapshot.child("Courses").child(courseId).child("date").getValue().toString();
+				String currentDateString = mdFormat.format(calendar.getTime());
+				try {
+					current_Date = mdFormat.parse(currentDateString);
+					course_Date = mdFormat.parse(courseDateString);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				countDownLatch.countDown();
+			}
+
+			@Override
+			public void onCancelled(DatabaseError error) {
+				// TODO Auto-generated method stub
+			}
+		});
+		try {
+			// wait for firebase to saves record.
+			countDownLatch.await();
+			//return course_Date.compareTo(current_Date) < 0 ? true : false;
+			return true;
+		} catch (InterruptedException ex) {
+			ex.printStackTrace();
+			return false;
+		}
+	}
+
+	
 }
