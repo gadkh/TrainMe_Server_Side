@@ -45,6 +45,7 @@ public class FireBaseMethods implements IFireBase {
 	private int currentNumOfUsers;
 	private int maxNumOfUsers;
 	private boolean generalFlag;
+	private int y;
 
 	@PostConstruct
 	public void configure() {
