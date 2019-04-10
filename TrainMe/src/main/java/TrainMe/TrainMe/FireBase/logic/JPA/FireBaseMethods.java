@@ -269,6 +269,7 @@ public class FireBaseMethods implements IFireBase {
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
+<<<<<<< HEAD
 				generalFlag = false;
 				if (snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()) {
 					generalFlag = true;
@@ -276,6 +277,17 @@ public class FireBaseMethods implements IFireBase {
 					generalFlag = false;
 				}
 				countDownLatch.countDown();
+=======
+				generalFlag=false;
+				 if(snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()){
+					 generalFlag=true;				
+					 }
+				 else
+				 {
+					 generalFlag=false;
+				 }
+				 countDownLatch.countDown();
+>>>>>>> master
 			}
 
 			@Override

@@ -24,9 +24,15 @@ public class SetUserRegisteredToCoursePlugin implements TrainMePlugins {
 
 	@Override
 	public Object invokeAction(ActivityEntity activityEntity) {
+<<<<<<< HEAD
 		CurrentNumOfUsersInCourse userRegisteredToCourse=new CurrentNumOfUsersInCourse();
 		try {
 			userRegisteredToCourse = this.jackson.readValue(activityEntity.getAttributesJson(), CurrentNumOfUsersInCourse.class);
+=======
+		UserRegisteredToCourse userRegisteredToCourse=new UserRegisteredToCourse();
+		try {
+			userRegisteredToCourse = this.jackson.readValue(activityEntity.getAttributesJson(), UserRegisteredToCourse.class);
+>>>>>>> master
 			this.firebaseService.setCurrentNumOfUsersRegisteredToCourse(userRegisteredToCourse.getCourseId(),userRegisteredToCourse.getCurrentNumOfUsers());
 			return userRegisteredToCourse;
 		} catch (IOException e) {
