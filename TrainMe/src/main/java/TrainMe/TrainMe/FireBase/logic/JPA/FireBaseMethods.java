@@ -64,7 +64,7 @@ public class FireBaseMethods implements IFireBase {
 		this.firebaseAuth.getInstance();
 		this.ref = database.getReference("server/saving-data/fireblog");
 		this.databaseReference = database.getReference("/");
-		this.generalFlag=false;
+		this.generalFlag = false;
 	}
 
 	@Override
@@ -213,11 +213,12 @@ public class FireBaseMethods implements IFireBase {
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				currentNumOfUsers=Integer.parseInt(snapshot.child("Courses").child(courseId).child("currentNumOfUsersInCourse").getValue().toString());
-				maxNumOfUsers=Integer.parseInt(snapshot.child("Courses").child(courseId).child("maxNumOfUsersInCourse").getValue().toString());
+				currentNumOfUsers = Integer.parseInt(snapshot.child("Courses").child(courseId)
+						.child("currentNumOfUsersInCourse").getValue().toString());
+				maxNumOfUsers = Integer.parseInt(
+						snapshot.child("Courses").child(courseId).child("maxNumOfUsersInCourse").getValue().toString());
 				countDownLatch.countDown();
 			}
-			
 
 			@Override
 			public void onCancelled(DatabaseError error) {
@@ -227,35 +228,35 @@ public class FireBaseMethods implements IFireBase {
 		try {
 			// wait for firebase to saves record.
 			countDownLatch.await();
-			return currentNumOfUsers==maxNumOfUsers?true:false;
+			return currentNumOfUsers == maxNumOfUsers ? true : false;
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 			return false;
 		}
 	}
-	
-	@Override
-	public boolean isOnWaitingList(String courseId,String userId) {
-		CountDownLatch countDownLatch = new CountDownLatch(1);
 
+	@Override
+	public boolean isOnWaitingList(String courseId, String userId) {
+		CountDownLatch countDownLatch = new CountDownLatch(1);
+		generalFlag = false;
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
+				if (snapshot.child("Courses").child(courseId).child("waitingList").child(userId).exists()) {
+					generalFlag = true;
+				} else {
+					generalFlag = false;
+				}
 				countDownLatch.countDown();
-				 if(snapshot.child("Courses").child(courseId).child("waitingList").child(userId).exists()){
-					 
-				 }
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError error) {
-				// TODO Auto-generated method stub
 			}
 		});
 		try {
-		
 			countDownLatch.await();
-			return true;
+			return generalFlag;
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 			return false;
@@ -268,6 +269,15 @@ public class FireBaseMethods implements IFireBase {
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
+<<<<<<< HEAD
+				generalFlag = false;
+				if (snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()) {
+					generalFlag = true;
+				} else {
+					generalFlag = false;
+				}
+				countDownLatch.countDown();
+=======
 				generalFlag=false;
 				 if(snapshot.child("Courses").child(courseId).child("registered").child(userId).exists()){
 					 generalFlag=true;				
@@ -277,15 +287,16 @@ public class FireBaseMethods implements IFireBase {
 					 generalFlag=false;
 				 }
 				 countDownLatch.countDown();
+>>>>>>> master
 			}
-			
+
 			@Override
 			public void onCancelled(DatabaseError error) {
 				// TODO Auto-generated method stub
 			}
 		});
 		try {
-			
+
 			countDownLatch.await();
 			return generalFlag;
 		} catch (Exception ex) {
@@ -302,17 +313,18 @@ public class FireBaseMethods implements IFireBase {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
 				countDownLatch.countDown();
-				int position = Integer.parseInt(snapshot.child("Courses").child(courseId).child("waitingList").child(userId)
-                 .child("position").getValue().toString());
-					 // TODO deal with the return here
+				int position = Integer.parseInt(snapshot.child("Courses").child(courseId).child("waitingList")
+						.child(userId).child("position").getValue().toString());
+				// TODO deal with the return here
 			}
+
 			@Override
 			public void onCancelled(DatabaseError error) {
 				// TODO Auto-generated method stub
 			}
 		});
 		try {
-		
+
 			countDownLatch.await();
 			return 1;
 		} catch (InterruptedException ex) {
@@ -325,8 +337,7 @@ public class FireBaseMethods implements IFireBase {
 	public UsersEntity addUserToCourse(String courseId, UsersEntity userEntity) {
 		this.childReference = databaseReference.child("Courses").child(courseId);
 		CountDownLatch countDownLatch = new CountDownLatch(1);
-		childReference.child("registered").child(userEntity.getUserId())
-		.setValue(userEntity, new CompletionListener() {
+		childReference.child("registered").child(userEntity.getUserId()).setValue(userEntity, new CompletionListener() {
 
 			@Override
 			public void onComplete(DatabaseError error, DatabaseReference ref) {
@@ -343,21 +354,22 @@ public class FireBaseMethods implements IFireBase {
 			ex.printStackTrace();
 			return null;
 		}
-	}	
-	
+	}
+
 	@Override
-	public void setCurrentNumOfUsersRegisteredToCourse(String courseId,int newCurrentNumOfUsers) {
+	public void setCurrentNumOfUsersRegisteredToCourse(String courseId, int newCurrentNumOfUsers) {
 		currentNumOfUsers = getCurrentNumOfUsersRegisteredToCourse(courseId);
 		currentNumOfUsers = newCurrentNumOfUsers;
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		this.childReference = databaseReference.child("Courses").child(courseId);
-		childReference.child("currentNumOfUsersInCourse").setValue(String.valueOf(currentNumOfUsers), new CompletionListener() {
-			@Override
-			public void onComplete(DatabaseError error, DatabaseReference ref) {
-				System.out.println("currentNumOfUsers Updated!");
-				countDownLatch.countDown();
-			}
-		});
+		childReference.child("currentNumOfUsersInCourse").setValue(String.valueOf(currentNumOfUsers),
+				new CompletionListener() {
+					@Override
+					public void onComplete(DatabaseError error, DatabaseReference ref) {
+						System.out.println("currentNumOfUsers Updated!");
+						countDownLatch.countDown();
+					}
+				});
 		try {
 			// wait for firebase to saves record.
 			countDownLatch.await();
@@ -365,16 +377,18 @@ public class FireBaseMethods implements IFireBase {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public int getCurrentNumOfUsersRegisteredToCourse(String courseId) {
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot snapshot) {
-				currentNumOfUsers=Integer.parseInt(snapshot.child("Courses").child(courseId).child("currentNumOfUsersInCourse").getValue().toString());
+				currentNumOfUsers = Integer.parseInt(snapshot.child("Courses").child(courseId)
+						.child("currentNumOfUsersInCourse").getValue().toString());
 				countDownLatch.countDown();
 			}
+
 			@Override
 			public void onCancelled(DatabaseError error) {
 				// TODO Auto-generated method stub
@@ -398,8 +412,8 @@ public class FireBaseMethods implements IFireBase {
 
 	@Override
 	public UsersEntity joinToWaitingList(String courseId, UsersEntity userEntity) {
-		this.childReference = databaseReference.child("Courses").child(courseId)
-				.child("waitingList").child(userEntity.getUserId());
+		this.childReference = databaseReference.child("Courses").child(courseId).child("waitingList")
+				.child(userEntity.getUserId());
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		childReference.setValue(userEntity, new CompletionListener() {
 
@@ -422,11 +436,10 @@ public class FireBaseMethods implements IFireBase {
 
 	@Override
 	public void deleteUserFromWaitingList(String courseId, String userId) {
-		this.childReference = databaseReference.child("Courses").child(courseId)
-				.child("waitingList").child(userId);
-		childReference.removeValueAsync();		
+		this.childReference = databaseReference.child("Courses").child(courseId).child("waitingList").child(userId);
+		childReference.removeValueAsync();
 	}
-	
+
 	@Override
 	public void rateCourse(String courseId, String userId, int rate) {
 		this.childReference = databaseReference.child("Courses").child(courseId).child("rates").child(userId);
@@ -448,9 +461,10 @@ public class FireBaseMethods implements IFireBase {
 			ex.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public boolean isDatePassed(String courseId) {
+		generalFlag = false;
 		CountDownLatch countDownLatch = new CountDownLatch(1);
 		databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
@@ -463,8 +477,10 @@ public class FireBaseMethods implements IFireBase {
 				try {
 					current_Date = mdFormat.parse(currentDateString);
 					course_Date = mdFormat.parse(courseDateString);
+					 if (course_Date.compareTo(current_Date) < 0) {
+						 generalFlag = true;
+				        }
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				countDownLatch.countDown();
@@ -472,19 +488,15 @@ public class FireBaseMethods implements IFireBase {
 
 			@Override
 			public void onCancelled(DatabaseError error) {
-				// TODO Auto-generated method stub
 			}
 		});
 		try {
-			// wait for firebase to saves record.
 			countDownLatch.await();
-			//return course_Date.compareTo(current_Date) < 0 ? true : false;
-			return true;
+			return generalFlag;
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 			return false;
 		}
 	}
 
-	
 }

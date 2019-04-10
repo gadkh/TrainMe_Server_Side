@@ -20,13 +20,6 @@ public class JPACourseService implements CourseService {
 	@Override
 	public CourseEntity saveCourse(CourseEntity courseEntity) {
 		return this.firebaseService.addCourse(courseEntity);
-		
-	}
 
-	@Override
-	public boolean checkCourseIsFull(String courseId) {
-		return this.firebaseService.checkCourseIsFull(courseId);
 	}
-	
-
 }

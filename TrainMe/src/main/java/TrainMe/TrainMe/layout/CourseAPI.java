@@ -17,33 +17,17 @@ import TrainMe.TrainMe.logic.entity.CourseEntity;
 @RestController
 public class CourseAPI {
 	private CourseService courseService;
-	
+
 	@Autowired
-	public void setCourseService(CourseService courseService)
-	{
-		this.courseService=courseService;
+	public void setCourseService(CourseService courseService) {
+		this.courseService = courseService;
 	}
-	
+
 	@RequestMapping(method = RequestMethod.POST, path = "/trainme/course", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@CrossOrigin(origins="*")
-	public CourseTO addCourse(@RequestBody CourseTO courseTo)
-	{
-		CourseEntity courseEntity=courseTo.toEntity();
+	@CrossOrigin(origins = "*")
+	public CourseTO addCourse(@RequestBody CourseTO courseTo) {
+		CourseEntity courseEntity = courseTo.toEntity();
 		this.courseService.saveCourse(courseEntity);
 		return new CourseTO(courseEntity);
-	}
-	
-	@RequestMapping(method = RequestMethod.GET, path = "/trainme/checkCourseFull/{courseId}")
-	@CrossOrigin(origins="*")
-	public Object checkCourseIsFull(@PathVariable("courseId") String courseId)
-	{
-		if(this.courseService.checkCourseIsFull(courseId)==true)
-		{
-			return new CheckCourseIsFull(true);
-		}
-		else
-		{
-			return new CheckCourseIsFull(true);
-		}
 	}
 }
