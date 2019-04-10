@@ -44,7 +44,7 @@ public class FireBaseMethods implements IFireBase {
 	private FirebaseAuth firebaseAuth;
 	private int currentNumOfUsers;
 	private int maxNumOfUsers;
-	private boolean generalFlag;
+	private boolean generalFlagx;
 
 	@PostConstruct
 	public void configure() {
